@@ -1,0 +1,10 @@
+services:
+  papermc:
+    build: ./
+    image: pierred/papermc:17-bullseye
+    ports:
+      - "25565:25565"
+    volumes:
+      - "./worlds:/opt/mscs/worlds"
+      - "./backups:/opt/mscs/backups"
+      - "./maps:/opt/mscs/maps"
