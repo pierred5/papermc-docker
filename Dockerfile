@@ -1,15 +1,17 @@
-FROM openjdk:17-bullseye
+#FROM openjdk:17-bullseye
+FROM openjdk:17-slim
 #ENTRYPOINT exec /bin/bash
 WORKDIR /root
 # Download required packages and install MinecraftServerControl/mscs git repo
 RUN set -ex; apt-get update ; \
     apt-get install --no-install-recommends -y \
-        git libjson-perl libwww-perl rdiff-backup rsync socat sudo make ; \
-    git clone --depth=1 "https://github.com/MinecraftServerControl/mscs.git" ; \
+        git libjson-perl libwww-perl procps \
+        rdiff-backup rsync socat sudo make wget; \
+    git clone --depth=1 "https://github.com/MinecraftServerControl/mscs.git"; \
     rm -rf mscs/.git* ; cd ./mscs/ ; make
 
 # Create default world. Default called world
-ARG WORLDNAME=world
+ENV WORLDNAME=world
 WORKDIR /opt/mscs
 RUN set -ex; mscs create $WORLDNAME;
 COPY eula.txt worlds/$WORLDNAME/
