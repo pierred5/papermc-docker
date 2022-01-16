@@ -7,11 +7,14 @@ RUN set -ex; apt-get update ; \
         git libjson-perl libwww-perl rdiff-backup rsync socat sudo make ; \
     git clone --depth=1 "https://github.com/MinecraftServerControl/mscs.git" ; \
     rm -rf mscs/.git* ; cd ./mscs/ ; make
-# Create default world
+
+# Create default world. Default called world
+ARG WORLDNAME=world
 WORKDIR /opt/mscs
-RUN set -ex; mscs create world1 ; mscs start world1 ; \
-    sleep 5s; \
-    sed -i -e '/eula/s/false/true/' worlds/world1/eula.txt;
+RUN set -ex; mscs create $WORLDNAME;
+COPY eula.txt worlds/$WORLDNAME/
+RUN sed -i -e "1a#$(date)" worlds/$WORLDNAME/eula.txt
+
 # Start world when container starts
-COPY ./start_mc.sh /opt/mscs/
+COPY start_mc.sh /opt/mscs/
 CMD ["./start_mc.sh"]
